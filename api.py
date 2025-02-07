@@ -6,21 +6,21 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from deep_translator import GoogleTranslator
 from mangum import Mangum  # Required for Vercel deployment
+from dotenv import load_dotenv  # Load environment variables from .env
 
+# Load environment variables from .env (only in local environment)
+load_dotenv()
 # Configure logging
 logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s",
     level=logging.INFO,
     handlers=[logging.StreamHandler()]
 )
-
-# Initialize FastAPI app
+# Initialize FastAPI app 
 app = FastAPI()
 
 # 🛠️ Replace with your actual S3 URLs
-S3_BUCKET_URL = "https://my-expenses-public.s3.eu-west-3.amazonaws.com"
-
-S3_BUCKET_URL = os.getenv("S3_BUCKET_URL", S3_BUCKET_URL)
+S3_BUCKET_URL = os.getenv("S3_BUCKET_URL")
 if not S3_BUCKET_URL:
     raise ValueError("Invalid S3_BUCKET_URL")
 MODEL_URL = f"{S3_BUCKET_URL}/expense_categorizer.pkl"

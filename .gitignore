@@ -4,4 +4,6 @@ models/
 *.pkl
 *.log
 data/
+.env
+.DS_Store
 
