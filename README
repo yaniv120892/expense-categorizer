@@ -15,25 +15,6 @@ This project is a **machine learning-based API** that automatically categorizes 
 
 ---
 
-## 📂 Project Structure
-```
-expense-categorizer/
-│── data/                 # Folder for dataset
-│   ├── exported.csv      # Original dataset (Hebrew descriptions)
-│   ├── exported_translated.csv # Translated dataset (English descriptions)
-│── models/               # Folder for trained models
-│   ├── expense_categorizer.pkl
-│   ├── vectorizer.pkl
-│   ├── label_encoder.pkl
-│── venv/                 # Virtual environment
-│── train.py              # Model training script
-│── api.py                # FastAPI server for predictions
-│── requirements.txt       # Python dependencies
-│── README.md             # Project documentation
-```
-
----
-
 ### 1 Set Up a Virtual Environment**
 ```bash
 python -m venv venv
