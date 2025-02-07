@@ -25,8 +25,8 @@ def oversample(df, min_samples):
     return df
 
 # Load dataset
-data_path = "data/exported.csv"
-df = pd.read_csv(data_path, encoding="utf-8-sig", delimiter=";")
+data_path = "data/exported_translated.csv"
+df = pd.read_csv(data_path, encoding="utf-8-sig", delimiter=",")
 df.dropna(subset=["Translated_Description"], inplace=True)
 
 df = oversample(df, min_samples)
