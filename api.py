@@ -3,6 +3,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import joblib
 from deep_translator import GoogleTranslator
+from mangum import Mangum
 
 # Configure logging
 logging.basicConfig(
@@ -24,16 +25,18 @@ except Exception as e:
 # Initialize FastAPI app
 app = FastAPI()
 
+# Initialize Translator
 translator = GoogleTranslator(source="auto", target="en")
 
-# Request model
 class ExpenseRequest(BaseModel):
     description: str
 
 @app.post("/predict")
 def predict_category(expense: ExpenseRequest):
     logging.info(f"🔍 Received prediction request: {expense.description}")
+
     try:
+        # Translate to English if needed
         translated_text = translator.translate(expense.description)
         logging.info(f"🌍 Translated description: {translated_text}")
 
@@ -47,7 +50,7 @@ def predict_category(expense: ExpenseRequest):
         category = label_encoder.inverse_transform([category_encoded])[0]
 
         logging.info(f"✅ Predicted category: {category}")
-        return {"category": category}
+        return {"category": category, "translated_description": translated_text}
 
     except Exception as e:
         logging.error(f"❌ Error during prediction: {e}")
@@ -59,4 +62,5 @@ def health_check():
     logging.info("🏓 Received ping request.")
     return {"status": "alive"}
 
-# Run the server with: uvicorn api:app --reload
+# Required for Vercel serverless deployment
+handler = Mangum(app)
