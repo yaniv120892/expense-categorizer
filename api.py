@@ -52,9 +52,9 @@ download_file(ENCODER_URL, ENCODER_PATH)
 
 # 🔽 Load models
 try:
-    model = joblib.load(MODEL_PATH)
-    vectorizer = joblib.load(VECTORIZER_PATH)
-    label_encoder = joblib.load(ENCODER_PATH)
+    model = joblib.load(MODEL_PATH, mmap_mode="r")
+    vectorizer = joblib.load(VECTORIZER_PATH, mmap_mode="r")
+    label_encoder = joblib.load(ENCODER_PATH, mmap_mode="r")  
     logging.info("✅ Model and encoders loaded successfully.")
 except Exception as e:
     logging.error(f"❌ Error loading model: {e}")

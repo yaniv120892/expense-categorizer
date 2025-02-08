@@ -71,8 +71,8 @@ print(f"\n✅ Model Accuracy: {accuracy:.2f}")
 
 # Save the trained model
 os.makedirs("models", exist_ok=True)
-joblib.dump(model, "models/expense_categorizer.pkl")
-joblib.dump(vectorizer, "models/vectorizer.pkl")
-joblib.dump(label_encoder, "models/label_encoder.pkl")
+joblib.dump(model, "models/expense_categorizer.pkl", protocol=4)
+joblib.dump(vectorizer, "models/vectorizer.pkl", protocol=4)
+joblib.dump(label_encoder, "models/label_encoder.pkl", protocol=4)
 
 print("✅ Model training complete. Files saved in 'models' folder.")
