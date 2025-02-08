@@ -1,6 +1,5 @@
 deep_translator==1.11.4
 fastapi==0.115.8
-joblib==1.4.2
 mangum==0.19.0
 pandas==2.2.3
 pydantic==2.10.6

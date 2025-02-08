@@ -7,7 +7,6 @@ from pydantic import BaseModel
 from deep_translator import GoogleTranslator
 from mangum import Mangum  # Required for Vercel deployment
 from dotenv import load_dotenv  # Load environment variables from .env
-import joblib  # For label encoding
 
 # Load environment variables from .env (only in local environment)
 load_dotenv()
@@ -28,11 +27,9 @@ if not S3_BUCKET_URL:
     raise ValueError("❌ Missing S3_BUCKET_URL environment variable!")
 
 MODEL_URL = f"{S3_BUCKET_URL}/expense_categorizer.ftz"
-ENCODER_URL = f"{S3_BUCKET_URL}/label_encoder.pkl"
 
 # Temporary storage paths (Vercel allows using `/tmp`)
 MODEL_PATH = "/tmp/expense_categorizer.ftz"
-ENCODER_PATH = "/tmp/label_encoder.pkl"
 
 # 🔽 Function to download files from S3
 def download_file(url, path):
@@ -49,13 +46,11 @@ def download_file(url, path):
 
 # 🔽 Download models if they don’t exist
 download_file(MODEL_URL, MODEL_PATH)
-download_file(ENCODER_URL, ENCODER_PATH)
 
 # 🔽 Load models
 try:
     fasttext_model = fasttext.load_model(MODEL_PATH)  # Load FastText model
-    label_encoder = joblib.load(ENCODER_PATH)  # Load label encoder
-    logging.info("✅ FastText model and encoders loaded successfully.")
+    logging.info("✅ FastText model loaded successfully.")
 except Exception as e:
     logging.error(f"❌ Error loading model: {e}")
     raise
