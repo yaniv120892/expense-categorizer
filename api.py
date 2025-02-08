@@ -8,6 +8,7 @@ from deep_translator import GoogleTranslator
 from mangum import Mangum  # Required for Vercel deployment
 from dotenv import load_dotenv  # Load environment variables from .env
 import sys
+import numpy as np
 
 # Load environment variables from .env (only in local environment)
 load_dotenv()
@@ -72,7 +73,7 @@ def predict_category(expense: ExpenseRequest):
         logging.info(f"🌍 Translated description: {translated_text}")
 
         # 🔹 Predict category using FastText
-        predicted_label = fasttext_model.predict(translated_text)[0][0]  # e.g., '__label__food'
+        predicted_label = np.asarray(fasttext_model.predict(translated_text)[0])[0]
         category = predicted_label.replace("__label__", "")  # Remove FastText label prefix
 
         logging.info(f"✅ Predicted category: {category}")
