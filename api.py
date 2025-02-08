@@ -1,5 +1,5 @@
 import logging
-import joblib
+import fasttext
 import requests  # For downloading model from S3
 import os
 from fastapi import FastAPI, HTTPException
@@ -7,29 +7,31 @@ from pydantic import BaseModel
 from deep_translator import GoogleTranslator
 from mangum import Mangum  # Required for Vercel deployment
 from dotenv import load_dotenv  # Load environment variables from .env
+import joblib  # For label encoding
 
 # Load environment variables from .env (only in local environment)
 load_dotenv()
+
 # Configure logging
 logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s",
     level=logging.INFO,
     handlers=[logging.StreamHandler()]
 )
+
 # Initialize FastAPI app 
 app = FastAPI()
 
 # 🛠️ Replace with your actual S3 URLs
 S3_BUCKET_URL = os.getenv("S3_BUCKET_URL")
 if not S3_BUCKET_URL:
-    raise ValueError("Invalid S3_BUCKET_URL")
-MODEL_URL = f"{S3_BUCKET_URL}/expense_categorizer.pkl"
-VECTORIZER_URL = f"{S3_BUCKET_URL}/vectorizer.pkl"
+    raise ValueError("❌ Missing S3_BUCKET_URL environment variable!")
+
+MODEL_URL = f"{S3_BUCKET_URL}/expense_categorizer.ftz"
 ENCODER_URL = f"{S3_BUCKET_URL}/label_encoder.pkl"
 
 # Temporary storage paths (Vercel allows using `/tmp`)
-MODEL_PATH = "/tmp/expense_categorizer.pkl"
-VECTORIZER_PATH = "/tmp/vectorizer.pkl"
+MODEL_PATH = "/tmp/expense_categorizer.ftz"
 ENCODER_PATH = "/tmp/label_encoder.pkl"
 
 # 🔽 Function to download files from S3
@@ -47,15 +49,13 @@ def download_file(url, path):
 
 # 🔽 Download models if they don’t exist
 download_file(MODEL_URL, MODEL_PATH)
-download_file(VECTORIZER_URL, VECTORIZER_PATH)
 download_file(ENCODER_URL, ENCODER_PATH)
 
 # 🔽 Load models
 try:
-    model = joblib.load(MODEL_PATH, mmap_mode="r")
-    vectorizer = joblib.load(VECTORIZER_PATH, mmap_mode="r")
-    label_encoder = joblib.load(ENCODER_PATH, mmap_mode="r")  
-    logging.info("✅ Model and encoders loaded successfully.")
+    fasttext_model = fasttext.load_model(MODEL_PATH)  # Load FastText model
+    label_encoder = joblib.load(ENCODER_PATH)  # Load label encoder
+    logging.info("✅ FastText model and encoders loaded successfully.")
 except Exception as e:
     logging.error(f"❌ Error loading model: {e}")
     raise
@@ -75,14 +75,9 @@ def predict_category(expense: ExpenseRequest):
         translated_text = translator.translate(expense.description)
         logging.info(f"🌍 Translated description: {translated_text}")
 
-        # 🔹 Transform text into vector
-        text_vectorized = vectorizer.transform([translated_text])
-
-        # 🔹 Predict category
-        category_encoded = model.predict(text_vectorized)[0]
-
-        # 🔹 Decode category
-        category = label_encoder.inverse_transform([category_encoded])[0]
+        # 🔹 Predict category using FastText
+        predicted_label = fasttext_model.predict(translated_text)[0][0]  # e.g., '__label__food'
+        category = predicted_label.replace("__label__", "")  # Remove FastText label prefix
 
         logging.info(f"✅ Predicted category: {category}")
         return {"category": category, "translated_description": translated_text}

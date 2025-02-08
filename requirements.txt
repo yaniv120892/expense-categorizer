@@ -10,3 +10,4 @@ Requests==2.32.3
 #scikit_learn==1.6.1
 seaborn==0.13.2
 tqdm==4.67.1
+fasttext==0.9.3
