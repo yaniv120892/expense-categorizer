@@ -12,3 +12,4 @@ seaborn==0.13.2
 tqdm==4.67.1
 urllib3==2.3.0
 uvicorn==0.34.0
+dotenv
