@@ -1,6 +1,4 @@
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
 import fasttext
 import fasttext.util
 import joblib
@@ -47,15 +45,6 @@ category_counts = df["Category"].value_counts()
 print("\n🔹 Category Distribution:")
 print(category_counts)
 
-# Plot the category distribution
-plt.figure(figsize=(10, 5))
-sns.barplot(x=category_counts.index, y=category_counts.values)
-plt.xticks(rotation=45, ha="right")
-plt.xlabel("Category")
-plt.ylabel("Count")
-plt.title("Expense Category Distribution")
-plt.show()
-
 # Prepare FastText training data format: "__label__category description"
 df["fasttext_label"] = df["Category"].apply(lambda x: f"__label__{x}")
 df["fasttext_text"] = df["Translated_Description"]
@@ -89,6 +78,7 @@ print(f"\n✅ Model Accuracy: {accuracy:.2f}")
 
 # Save the trained FastText model
 os.makedirs("models", exist_ok=True)
+fasttext_model.quantize(input=None, qnorm=True, retrain=True, cutoff=50000)
 fasttext_model.save_model("models/expense_categorizer.ftz")
 
 # 🔹 Save Label Encoder for API
