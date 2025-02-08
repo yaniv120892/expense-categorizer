@@ -78,7 +78,7 @@ print(f"\n✅ Model Accuracy: {accuracy:.2f}")
 
 # Save the trained FastText model
 os.makedirs("models", exist_ok=True)
-fasttext_model.quantize(input=None, qnorm=True, retrain=True, cutoff=50000)
+fasttext_model.quantize(qnorm=True, cutoff=50000)
 fasttext_model.save_model("models/expense_categorizer.ftz")
 
 # 🔹 Save Label Encoder for API
