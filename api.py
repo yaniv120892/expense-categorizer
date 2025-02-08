@@ -88,4 +88,4 @@ def health_check():
     return {"status": "alive"}
 
 # Wrap FastAPI app with Mangum for Vercel serverless deployment
-handler = Mangum(app)
+handler = Mangum(app, lifespan="off")  # Disable lifespan events for serverless
