@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "api.py",
+      "src": "index.py",
       "use": "@vercel/python",
       "config": { "runtime": "python3.10" }
     }
@@ -10,7 +10,7 @@
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "api.py"
+      "dest": "index.py"
     }
   ],
   "buildCommand": "./vercel.sh"
