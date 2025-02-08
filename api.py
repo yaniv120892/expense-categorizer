@@ -7,6 +7,7 @@ from pydantic import BaseModel
 from deep_translator import GoogleTranslator
 from mangum import Mangum  # Required for Vercel deployment
 from dotenv import load_dotenv  # Load environment variables from .env
+import sys
 
 # Load environment variables from .env (only in local environment)
 load_dotenv()
@@ -87,5 +88,12 @@ def health_check():
     logging.info("🏓 Received ping request.")
     return {"status": "alive"}
 
-# Wrap FastAPI app with Mangum for Vercel serverless deployment
-handler = Mangum(app, lifespan="off")  # Disable lifespan events for serverless
+logging.info(f"🐍 Python version: {sys.version}")
+logging.info(f"📦 Installed packages: {sys.modules.keys()}")
+
+try:
+    handler = Mangum(app, lifespan="off")
+    logging.info("✅ Mangum initialized successfully")
+except Exception as e:
+    logging.error(f"❌ Mangum initialization failed: {e}")
+    raise
