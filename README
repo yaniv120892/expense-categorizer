@@ -1,63 +1,87 @@
 # Expense Categorization API
 
 ## 📌 Overview
+
 This project is a **machine learning-based API** that automatically categorizes expense descriptions into predefined categories. It uses **TF-IDF + Logistic Regression** for text classification and supports **Hebrew to English translation** for better accuracy.
 
 ---
 
 ## 🚀 Features
+
 ✅ **Classifies expenses** based on descriptions.  
 ✅ **Supports Hebrew and English input** (translates Hebrew to English before prediction).  
 ✅ **REST API built with FastAPI**.  
 ✅ **Machine learning model trained on expense data**.  
 ✅ **Logs every request and prediction**.  
-✅ **Health check endpoint (`/ping`)**.  
+✅ **Health check endpoint (`/ping`)**.
 
 ---
 
-### 1 Set Up a Virtual Environment**
+## ⚙️ Data Preparation
+
+### **0. Set Up Python Environment**
+
+First, create and activate a virtual environment:
+
 ```bash
 python -m venv venv
 source venv/bin/activate
 ```
 
-### **2 Install Dependencies**
+### **1. Install Dependencies**
+
 ```bash
 pip install -r requirements.txt
 ```
 
----
+### **2. Run the Translation Script**
 
-## 📊 Train the Model
+```bash
+python translate.py
+```
+
+- This will generate a translated data file (e.g., `data/expenses_translated.csv`).
+
+### **3. Train the Model**
+
 ```bash
 python train.py
 ```
-✅ This will train the model and save it in the `models/` folder.  
-✅ It will also display a **histogram of category distribution** to check for imbalances.
+
+- This will train the model using the translated data and save it in the `models/` folder.
+- It will also display a **histogram of category distribution** to check for imbalances.
 
 ---
 
 ## 🌍 Start the API Server
+
 ```bash
 uvicorn api:app --reload
 ```
+
 API will be available at:  
 📍 `http://127.0.0.1:8000`
 
 ### **🛠 Health Check**
+
 ```bash
 curl http://127.0.0.1:8000/ping
 ```
+
 **Expected Response:**
+
 ```json
-{"status": "alive"}
+{ "status": "alive" }
 ```
 
 ---
 
 ## 🎯 API Endpoints
+
 ### **🔹 Predict Expense Category**
+
 #### **Request**
+
 ```bash
 curl -X POST "http://127.0.0.1:8000/predict" \
      -H "Content-Type: application/json" \
@@ -65,10 +89,10 @@ curl -X POST "http://127.0.0.1:8000/predict" \
 ```
 
 #### **Response**
+
 ```json
 {
   "category": "Groceries",
   "translated_description": "I bought food at the supermarket"
 }
 ```
-
