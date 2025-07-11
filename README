@@ -45,7 +45,7 @@ python translate.py
 ### **3. Train the Model**
 
 ```bash
-python train.py
+python train_v2.py
 ```
 
 - This will train the model using the translated data and save it in the `models/` folder.
